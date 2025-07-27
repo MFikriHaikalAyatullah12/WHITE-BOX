@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Peminjaman Buku Digital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --info: #2980b9;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            font-size: 2rem;
+            color: var(--secondary);
+        }
+        
+        .logo-text {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+        
+        .logo-text span {
+            color: var(--secondary);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        nav a:hover {
+            color: var(--secondary);
+        }
+        
+        /* Main Content Styles */
+        main {
+            min-height: calc(100vh - 120px);
+            padding: 2rem 0;
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(44, 62, 80, 0.9), rgba(44, 62, 80, 0.9)), 
+                        url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        
+        /* Auth Container Styles */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .auth-box {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+            display: flex;
+        }
+        
+        .auth-image {
+            flex: 1;
+            background: linear-gradient(rgba(52, 152, 219, 0.7), rgba(52, 152, 219, 0.7)), 
+                        url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .auth-image h2 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 1rem;
+        }
+        
+        .auth-form {
+            flex: 1;
+            padding: 2rem;
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .form-header h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-header p {
+            color: #7f8c8d;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--primary);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .mt-3 {
+            margin-top: 1rem;
+        }
+        
+        .switch-link {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+            margin-top: 1rem;
+            transition: color 0.3s;
+        }
+        
+        .switch-link:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+        
+        .social-login {
+            margin-top: 1.5rem;
+        }
+        
+        .social-login p {
+            position: relative;
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+        }
+        
+        .social-login p::before,
+        .social-login p::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background-color: #ddd;
+        }
+        
+        .social-login p::before {
+            left: 0;
+        }
+        
+        .social-login p::after {
+            right: 0;
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .social-icon.facebook {
+            background-color: #3b5998;
+        }
+        
+        .social-icon.google {
+            background-color: #db4437;
+        }
+        
+        .social-icon.twitter {
+            background-color: #1da1f2;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Dashboard Styles */
+        .dashboard {
+            display: none;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-title {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .logout-btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+        
+        .stat-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .stat-card p {
+            color: #7f8c8d;
+        }
+        
+        .card-primary {
+            border-top: 4px solid var(--secondary);
+        }
+        
+        .card-success {
+            border-top: 4px solid var(--success);
+        }
+        
+        .card-warning {
+            border-top: 4px solid var(--warning);
+        }
+        
+        .card-danger {
+            border-top: 4px solid var(--accent);
+        }
+        
+        /* Book Loan Form */
+        .loan-form {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Tables */
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+        
+        .status-overdue {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--accent);
+        }
+        
+        .status-pending {
+            background-color: rgba(241, 196, 15, 0.1);
+            color: var(--warning);
+        }
+        
+        .action-btn {
+            padding: 0.3rem 0.6rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-right: 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .action-btn i {
+            margin-right: 3px;
+        }
+        
+        .btn-view {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--secondary);
+        }
+        
+        .btn-view:hover {
+            background-color: rgba(52, 152, 219, 0.2);
+        }
+        
+        .btn-edit {
+            background-color: rgba(241, 196, 15, 0.1);
+            color: var(--warning);
+        }
+        
+        .btn-edit:hover {
+            background-color: rgba(241, 196, 15, 0.2);
+        }
+        
+        .btn-delete {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--accent);
+        }
+        
+        .btn-delete:hover {
+            background-color: rgba(231, 76, 60, 0.2);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        
+        .footer-col h3 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .footer-col ul {
+            list-style: none;
+        }
+        
+        .footer-col li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-col a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-col a:hover {
+            color: white;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #bdc3c7;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .auth-box {
+                flex-direction: column;
+            }
+            
+            .auth-image {
+                padding: 1.5rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Utility Classes */
+        .hidden {
+            display: none;
+        }
+        
+        .text-success {
+            color: var(--success);
+        }
+        
+        .text-danger {
+            color: var(--accent);
+        }
+        
+        .text-warning {
+            color: var(--warning);
+        }
+        
+        .mb-3 {
+            margin-bottom: 1rem;
+        }
+        
+        .mb-4 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .mt-4 {
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <i class="fas fa-book-open"></i>
+                <div class="logo-text">Digital<span>Library</span></div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#"><i class="fas fa-home"></i> Beranda</a></li>
+                    <li><a href="#"><i class="fas fa-book"></i> Katalog</a></li>
+                    <li><a href="#"><i class="fas fa-info-circle"></i> Tentang</a></li>
+                    <li><a href="#"><i class="fas fa-envelope"></i> Kontak</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- Login/Register Section -->
+            <section id="auth-section">
+                <div class="hero">
+                    <h1>Selamat Datang di DigitalLibrary</h1>
+                    <p>Pinjam buku favorit Anda dengan mudah dan cepat. Akses ribuan koleksi buku digital kami kapan saja, di mana saja.</p>
+                </div>
+                
+                <div class="auth-container">
+                    <div class="auth-box">
+                        <div class="auth-image">
+                            <h2>Bergabunglah Dengan Kami</h2>
+                            <p>Dapatkan akses ke ribuan buku digital dan fitur peminjaman yang mudah</p>
+                        </div>
+                        <div class="auth-form">
+                            <!-- Login Form -->
+                            <div id="login-form">
+                                <div class="form-header">
+                                    <h2>Masuk ke Akun Anda</h2>
+                                    <p>Silakan masuk dengan akun yang sudah terdaftar</p>
+                                </div>
+                                <form id="loginForm">
+                                    <div class="form-group">
+                                        <label for="username">Username atau Email</label>
+                                        <input type="text" id="username" class="form-control" placeholder="Masukkan username atau email" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <input type="password" id="password" class="form-control" placeholder="Masukkan password" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="form-check">
+                                                <input type="checkbox" class="form-check-input" id="rememberMe">
+                                                <label class="form-check-label" for="rememberMe">Ingat saya</label>
+                                            </div>
+                                            <a href="#" class="text-decoration-none">Lupa password?</a>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary mb-3" onclick="validateLogin()">Masuk</button>
+                                    <div class="social-login">
+                                        <p>Atau masuk dengan</p>
+                                        <div class="social-icons">
+                                            <a href="#" class="social-icon facebook"><i class="fab fa-facebook-f"></i></a>
+                                            <a href="#" class="social-icon google"><i class="fab fa-google"></i></a>
+                                            <a href="#" class="social-icon twitter"><i class="fab fa-twitter"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <span>Belum punya akun? </span>
+                                        <a href="#" class="switch-link" onclick="showRegister()">Daftar sekarang</a>
+                                    </div>
+                                </form>
+                                <div id="result" class="mt-3 text-center"></div>
+                            </div>
+                            
+                            <!-- Register Form -->
+                            <div id="register-form" class="hidden">
+                                <div class="form-header">
+                                    <h2>Buat Akun Baru</h2>
+                                    <p>Isi formulir berikut untuk mendaftar</p>
+                                </div>
+                                <form id="registerForm">
+                                    <div class="form-group">
+                                        <label for="reg-username">Username</label>
+                                        <input type="text" id="reg-username" class="form-control" placeholder="Masukkan username" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reg-email">Email</label>
+                                        <input type="email" id="reg-email" class="form-control" placeholder="Masukkan email" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reg-password">Password</label>
+                                        <input type="password" id="reg-password" class="form-control" placeholder="Masukkan password" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reg-password2">Konfirmasi Password</label>
+                                        <input type="password" id="reg-password2" class="form-control" placeholder="Konfirmasi password" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                                            <label class="form-check-label" for="agreeTerms">Saya setuju dengan <a href="#">Syarat dan Ketentuan</a></label>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary mb-3" onclick="registerUser()">Daftar</button>
+                                    <div class="text-center mt-3">
+                                        <span>Sudah punya akun? </span>
+                                        <a href="#" class="switch-link" onclick="showLogin()">Masuk sekarang</a>
+                                    </div>
+                                </form>
+                                <div id="register-result" class="mt-3 text-center"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="hidden">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">Dashboard Peminjaman</h1>
+                    <div class="user-info">
+                        <div class="user-avatar" id="user-avatar">A</div>
+                        <button class="logout-btn" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Keluar
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="stats-cards">
+                    <div class="stat-card card-primary">
+                        <i class="fas fa-book"></i>
+                        <h3 id="total-books">0</h3>
+                        <p>Total Buku Tersedia</p>
+                    </div>
+                    <div class="stat-card card-success">
+                        <i class="fas fa-check-circle"></i>
+                        <h3 id="active-loans">0</h3>
+                        <p>Peminjaman Aktif</p>
+                    </div>
+                    <div class="stat-card card-warning">
+                        <i class="fas fa-clock"></i>
+                        <h3 id="pending-returns">0</h3>
+                        <p>Harus Dikembalikan</p>
+                    </div>
+                    <div class="stat-card card-danger">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h3 id="overdue-books">0</h3>
+                        <p>Terlambat</p>
+                    </div>
+                </div>
+                
+                <!-- Loan Form -->
+                <div class="loan-form">
+                    <h2 class="mb-4">Formulir Peminjaman Buku</h2>
+                    <form id="borrowForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="borrow-book">Judul Buku</label>
+                                <input type="text" id="borrow-book" class="form-control" placeholder="Cari atau masukkan judul buku" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="book-author">Pengarang</label>
+                                <input type="text" id="book-author" class="form-control" placeholder="Nama pengarang" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="borrow-date">Tanggal Pinjam</label>
+                                <input type="date" id="borrow-date" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="return-date">Tanggal Kembali</label>
+                                <input type="date" id="return-date" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="borrow-duration">Lama (hari)</label>
+                                <input type="number" id="borrow-duration" class="form-control" min="1" value="7" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="borrow-notes">Catatan (opsional)</label>
+                            <textarea id="borrow-notes" class="form-control" rows="3" placeholder="Masukkan catatan jika diperlukan"></textarea>
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="submitBorrow()">Ajukan Peminjaman</button>
+                    </form>
+                    <div id="borrow-result" class="mt-3 text-center"></div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="quick-actions mb-4">
+                    <h2 class="mb-3">Aksi Cepat</h2>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline" onclick="showBorrowers()">
+                            <i class="fas fa-users"></i> Lihat Peminjam
+                        </button>
+                        <button class="btn btn-outline" onclick="showBorrowedBooks()">
+                            <i class="fas fa-book"></i> Buku Dipinjam
+                        </button>
+                        <button class="btn btn-outline" onclick="showBookCatalog()">
+                            <i class="fas fa-search"></i> Cari Buku
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity -->
+                <div class="table-container">
+                    <h2 class="mb-3">Aktivitas Terkini</h2>
+                    <table id="recent-activity">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Judul Buku</th>
+                                <th>Tanggal Pinjam</th>
+                                <th>Tanggal Kembali</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-activity-body">
+                            <!-- Data will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <!-- Borrowers Data Section -->
+            <section id="borrowers-data" class="hidden">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Data Peminjam</h2>
+                    <button class="btn btn-primary" onclick="showDashboard()">
+                        <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
+                    </button>
+                </div>
+                <div class="table-container">
+                    <div id="borrowers-table"></div>
+                </div>
+            </section>
+            
+            <!-- Borrowed Books Section -->
+            <section id="borrowed-books-data" class="hidden">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Daftar Buku Dipinjam</h2>
+                    <button class="btn btn-primary" onclick="showDashboard()">
+                        <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
+                    </button>
+                </div>
+                <div class="table-container">
+                    <div id="books-table"></div>
+                </div>
+            </section>
+            
+            <!-- Book Catalog Section -->
+            <section id="book-catalog" class="hidden">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>Katalog Buku</h2>
+                    <button class="btn btn-primary" onclick="showDashboard()">
+                        <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
+                    </button>
+                </div>
+                <div class="table-container">
+                    <div class="form-group">
+                        <input type="text" id="search-book" class="form-control" placeholder="Cari buku...">
+                    </div>
+                    <table id="catalog-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Judul</th>
+                                <th>Pengarang</th>
+                                <th>Tahun</th>
+                                <th>Ketersediaan</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="catalog-body">
+                            <!-- Data will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-col">
+                <h3>DigitalLibrary</h3>
+                <p>Sistem peminjaman buku digital yang mudah dan efisien untuk kebutuhan literasi Anda.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Tautan Cepat</h3>
+                <ul>
+                    <li><a href="#">Beranda</a></li>
+                    <li><a href="#">Katalog Buku</a></li>
+                    <li><a href="#">Cara Meminjam</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Layanan</h3>
+                <ul>
+                    <li><a href="#">Peminjaman Buku</a></li>
+                    <li><a href="#">Perpanjangan</a></li>
+                    <li><a href="#">Reservasi</a></li>
+                    <li><a href="#">Rekomendasi</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Kontak</h3>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i> Jl. Perpustakaan No. 123, Jakarta</li>
+                    <li><i class="fas fa-phone"></i> (021) 1234-5678</li>
+                    <li><i class="fas fa-envelope"></i> info@digitallibrary.id</li>
+                </ul>
+            </div>
+        </div>
+        <div class="container copyright">
+            <p>&copy; 2023 DigitalLibrary. Semua hak dilindungi.</p>
+        </div>
+    </footer>
+
+    <script src="klp 3.js"></script>
+</body>
+</html>
